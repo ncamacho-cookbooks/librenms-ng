@@ -4,6 +4,7 @@
 #
 # Copyright:: 2017, The Authors, All Rights Reserved.
 
+include_recipe 'apt' ## Will run apt update
 include_recipe 'apache2'
 include_recipe 'logrotate'
 
@@ -23,10 +24,12 @@ when 'debian'
   librenms_phpconf = '/etc/php/7.0/apache2/conf.d/25-librenms.ini'
   rrdcached_config = '/etc/default/rrdcached'
 
-  package %w[composer fping git graphviz imagemagick libapache2-mod-php7.0 mariadb-client mariadb-server
-             mtr-tiny nmap php7.0-cli php7.0-curl php7.0-gd php7.0-json php7.0-mcrypt php7.0-mysql php7.0-snmp
-             php7.0-xml php7.0-zip python-memcache python-mysqldb rrdtool snmp snmpd whois] do
-    action :install
+  packages_to_install = %w[composer fping git graphviz imagemagick libapache2-mod-php7.0 mariadb-client mariadb-server mtr-tiny nmap php7.0-cli php7.0-curl php7.0-gd php7.0-json php7.0-mcrypt php7.0-mysql php7.0-snmp php7.0-xml php7.0-zip python-memcache python-mysqldb rrdtool snmp snmpd unzip whois]
+
+  packages_to_install.each do |p|
+  	package p do
+  	action :install
+  	end
   end
 
   package 'php7.0-ldap' do
@@ -34,12 +37,18 @@ when 'debian'
     only_if { node['librenms']['auth_ad']['enabled'] }
   end
 
-  package rrdcached do
+  package "rrdcached" do
     action :install
     only_if { node['librenms']['rrdcached']['enabled'] }
   end
 
-  template rrdcached_config do
+  service 'rrdcached' do
+    supports :restart => true, :reload => true
+    action [:enable, :start]
+    only_if { node['librenms']['rrdcached']['enabled'] }
+  end
+
+  template "rrdcached_config" do
     source 'rrdcached.erb'
     owner 'root'
     group 'root'
@@ -92,8 +101,6 @@ when 'rhel'
 
   include_recipe 'yum-epel'
 
-  package %w[mariadb mariadb-server]
-
   service 'mariadb' do
     supports status: true, restart: true, reload: true
     action :start
@@ -130,13 +137,14 @@ when 'rhel'
     only_if { node['librenms']['rrdcached']['enabled'] }
   end
 
-  package %w[php70w php70w-cli php70w-gd php70w-mysql php70w-snmp php70w-curl php70w-common
-             php70w-process net-snmp ImageMagick jwhois nmap mtr rrdtool MySQL-python net-snmp-utils
-             composer cronie php70w-mcrypt fping git unzip] do
-    action :install
-  end
+  packages_to_install = %w[php7.0 php7.0-cli php7.0-gd php7.0-mysql php7.0-snmp php7.0-curl php7.0-common php7.0-process net-snmp ImageMagick jwhois nmap mtr rrdtool MySQL-python net-snmp-utils composer cronie php7.0-mcrypt fping git unzip]
+  packages_to_install.each do |p|
+    package p do
+      action :install
+    end
+ end
 
-  package 'php70w-ldap' do
+  package 'php7.0-ldap' do
     action :install
     only_if { node['librenms']['auth_ad']['enabled'] }
   end
@@ -311,7 +319,7 @@ end
 
 execute 'install composer dependencies' do
   action :run
-  command 'php scripts/composer_wrapper.php install --no-dev'
+  command 'composer create-project --no-dev --keep-vcs librenms/librenms librenms dev-master'
   cwd librenms_homedir
   user 'root'
   group 'root'
