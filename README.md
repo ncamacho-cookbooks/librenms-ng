@@ -1,12 +1,11 @@
 # librenms
 
-[![Cookbook Version][cookbook_version]][cookbook]
-[![Build Status][build_status]][build_status]
 
 [LibreNMS](http://www.librenms.org/)
 Installation and configuration by chef
 
 ## Cookbooks dependencies
+* apt
 * apache2
 * logrotate
 * yum-epel
@@ -14,7 +13,7 @@ Installation and configuration by chef
 ## Platforms
 The release is tested on:
 * CentOS 7.x
-* Ubuntu stretch/sid
+* Ubuntu 16
 
 ## Attributes
 <table>
@@ -82,11 +81,6 @@ The release is tested on:
 - all other extensions support
 
 ## Author
-Author:: criteo (n.grieco@criteo.com)
+Author:: Nestor Camacho III (ncamacho@gmail.com)
 
-Copyright:: 2018, criteo
-
-
-[build_status]:             https://api.travis-ci.org/criteo-cookbooks/librenms.svg?branch=master
-[cookbook_version]:         https://img.shields.io/cookbook/v/librenms.svg
-[cookbook]:                 https://supermarket.chef.io/cookbooks/librenms
+Copyright:: 2018, ncamacho

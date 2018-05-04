@@ -346,4 +346,4 @@ execute 'adduser admin' do
   group 'root'
 end
 
-include_recipe 'librenms::cron'
+include_recipe 'librenms-ng::cron'
