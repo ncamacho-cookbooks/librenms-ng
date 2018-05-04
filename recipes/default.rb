@@ -1,10 +1,10 @@
 #
-# Cookbook:: librenms
+# Cookbook:: librenms-ng
 # Recipe:: default
 #
-# Copyright:: 2017, The Authors, All Rights Reserved.
+# Copyright:: 2018, The Authors, All Rights Reserved.
 
-include_recipe 'apt' ## Will run apt update
+include_recipe 'apt' ## Will run apt update to get the latest lists
 include_recipe 'apache2'
 include_recipe 'logrotate'
 

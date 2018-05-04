@@ -84,7 +84,7 @@ The release is tested on:
 ## Author
 Author:: criteo (n.grieco@criteo.com)
 
-Copyright:: 2017, criteo
+Copyright:: 2018, criteo
 
 
 [build_status]:             https://api.travis-ci.org/criteo-cookbooks/librenms.svg?branch=master

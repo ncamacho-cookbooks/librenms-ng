@@ -1,8 +1,8 @@
 #
-# Cookbook:: librenms
+# Cookbook:: librenms-ng
 # Recipe:: cron
 #
-# Copyright:: 2017, The Authors, All Rights Reserved.
+# Copyright:: 2018, The Authors, All Rights Reserved.
 # cron mgmt to be able to disable them one by one if not wanted.
 
 # TODO : set the frequencies as attributes
