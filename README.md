@@ -1,4 +1,4 @@
-# librenms
+# librenms-ng
 
 
 [LibreNMS](http://www.librenms.org/)
