@@ -4,12 +4,12 @@ maintainer_email  'ncamacho@gmail.com'
 license           'Apache-2.0'
 description       'Installs/Configures librenms'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version           '0.1.2'
+version           '0.2.0'
 supports          'centos7'
 supports          'ubuntu16'
 
-source_url 'https://github.com/criteo-cookbooks/librenms' if respond_to?(:source_url)
-issues_url 'https://github.com/criteo-cookbooks/librenms/issues' if respond_to?(:issues_url)
+source_url 'https://github.com/ncamacho-cookbooks/librenms-ng' if respond_to?(:source_url)
+issues_url 'https://github.com/ncamacho-cookbooks/librenms-ng/issues' if respond_to?(:issues_url)
 
 depends 'apt', '5.0.0'
 depends	'apache2'
