@@ -15,5 +15,5 @@ depends 'apt', '5.0.0'
 depends	'apache2'
 depends	'logrotate'
 depends 'yum-epel'
-depends 'ark', <= '3.0.0'
+depends 'ark', '<= 3.0.0'
 chef_version '>= 12.5' if respond_to?(:chef_version)
