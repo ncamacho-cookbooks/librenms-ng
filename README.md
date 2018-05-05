@@ -25,7 +25,7 @@ The release is tested on:
   <tr>
     <td><code>node['librenms']['install']['version']</code></td>
     <td>LibreNMS version to install (from github repo)</td>
-    <td><code>master</code></td>
+    <td><code>1.35</code></td>
   </tr>
   <tr>
     <td><code>node['librenms']['contact']</code></td>
