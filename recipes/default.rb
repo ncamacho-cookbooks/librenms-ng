@@ -233,11 +233,12 @@ end
 
 execute 'create_db' do
   action :run
-  command 'mysql -uroot < /tmp/create_db.sql'
+  command "mysql -uroot < /tmp/create_db.sql && touch #{librenms_homedir}/.created_database_via_chef_do_not_remove"
   cwd '/tmp'
   user 'root'
   group 'root'
   not_if 'echo "show tables;" | mysql -uroot librenms'
+  creates "#{librenms_homedir}/.created_database_via_chef_do_not_remove"
 end
 
 logrotate_app 'librenms' do
@@ -319,23 +320,25 @@ end
 
 execute 'install composer dependencies' do
   action :run
-  command 'composer create-project --no-dev --keep-vcs librenms/librenms librenms dev-master'
+  command "composer create-project --no-dev --keep-vcs librenms/librenms librenms dev-master && touch #{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
   cwd librenms_homedir
   user 'root'
   group 'root'
+  creates "#{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
 end
 
 execute 'build base' do
   action :run
-  command 'php build-base.php'
+  command "php build-base.php && touch #{librenms_homedir}/.built_base_via_chef_do_not_remove"
   cwd librenms_homedir
   user 'root'
   group 'root'
+  creates "#{librenms_homedir}/.built_base_via_chef_do_not_remove"
 end
 
 execute 'adduser admin' do
   action :run
-  command 'php adduser.php $LIBRE_USER $LIBRE_PASS 10 $LIBRE_MAIL'
+  command "php adduser.php $LIBRE_USER $LIBRE_PASS 10 $LIBRE_MAIL && touch #{librenms_homedir}/.admin_user_created_via_chef_do_not_remove"
   cwd librenms_homedir
   environment(
     'LIBRE_USER' => node['librenms']['user_admin'],
@@ -344,6 +347,7 @@ execute 'adduser admin' do
   )
   user 'root'
   group 'root'
+  creates "#{librenms_homedir}/.admin_user_created_via_chef_do_not_remove"
 end
 
 include_recipe 'librenms-ng::cron'
