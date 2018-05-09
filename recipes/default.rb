@@ -17,6 +17,7 @@ librenms_group = node['librenms']['group']
 librenms_version = node['librenms']['install']['version']
 librenms_file = "#{librenms_version}.zip"
 librenms_phpconfigfile = ::File.join(librenms_homedir, 'config.php')
+librenms_version = node['librenms']['install']['version']
 
 case node['platform_family']
 when 'debian'
@@ -320,7 +321,7 @@ end
 
 execute 'install composer dependencies' do
   action :run
-  command "composer create-project --no-dev --keep-vcs librenms/librenms librenms dev-master && touch #{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
+  command "composer create-project --no-dev --keep-vcs librenms/librenms #{librenms_version} && touch #{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
   cwd librenms_homedir
   user 'root'
   group 'root'
