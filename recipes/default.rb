@@ -329,7 +329,7 @@ end
 
 execute 'build base' do
   action :run
-  command "php build-base.php && touch #{librenms_homedir}/.built_base_via_chef_do_not_remove"
+  command "cp ../config.php . && php build-base.php && touch #{librenms_homedir}/.built_base_via_chef_do_not_remove"
   cwd librenms_homedir
   user 'root'
   group 'root'
