@@ -24,7 +24,7 @@ when 'debian'
   librenms_phpconf = '/etc/php/7.0/apache2/conf.d/25-librenms.ini'
   rrdcached_config = '/etc/default/rrdcached'
 
-  packages_to_install = %w[composer fping git graphviz imagemagick libapache2-mod-php7.0 mariadb-client mariadb-server mtr-tiny nmap php7.0-cli php7.0-curl php7.0-gd php7.0-json php7.0-mcrypt php7.0-mysql php7.0-snmp php7.0-xml php7.0-zip python-memcache python-mysqldb rrdtool snmp snmpd unzip whois]
+  packages_to_install = %w[composer fping git graphviz imagemagick libapache2-mod-php7.0 mariadb-client mariadb-server mtr-tiny nmap php7.0-cli php7.0-curl php7.0-gd php7.0-json php7.0-mbstring php7.0-mcrypt php7.0-mysql php7.0-snmp php7.0-xml php7.0-zip php-mbstring python-memcache python-mysqldb rrdtool snmp snmpd unzip whois]
 
   packages_to_install.each do |p|
   	package p do
@@ -137,7 +137,7 @@ when 'rhel'
     only_if { node['librenms']['rrdcached']['enabled'] }
   end
 
-  packages_to_install = %w[php7.0 php7.0-cli php7.0-gd php7.0-mysql php7.0-snmp php7.0-curl php7.0-common php7.0-process net-snmp ImageMagick jwhois nmap mtr rrdtool MySQL-python net-snmp-utils composer cronie php7.0-mcrypt fping git unzip]
+  packages_to_install = %w[php7.0 php7.0-cli php7.0-gd php7.0-mysql php7.0-snmp php7.0-curl php7.0-common php7.0-mbstring php7.0-process php-mbstring net-snmp ImageMagick jwhois nmap mtr rrdtool MySQL-python net-snmp-utils composer cronie php7.0-mcrypt fping git unzip]
   packages_to_install.each do |p|
     package p do
       action :install
@@ -200,14 +200,7 @@ end
 #   action :install
 # end
 
-# execute 'find and chown' do
-#   command "find -L #{librenms_homedir} ! -user #{librenms_username} -exec chown #{librenms_username}:#{librenms_group} {} \\;"
-#   user 'root'
-#   group 'root'
-#   not_if "find -L #{librenms_homedir} ! -user #{librenms_username} | grep #{librenms_homedir}"
-# end
-
-execute 'install composer dependencies' do
+execute 'install librenms' do
   action :run
   command "composer create-project --no-dev --keep-vcs librenms/librenms librenms #{librenms_version} && touch #{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
   cwd librenms_rootdir
@@ -216,12 +209,14 @@ execute 'install composer dependencies' do
   creates "#{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
 end
 
-execute 'find and chown' do
-  command "find -L #{librenms_homedir} ! -user #{librenms_username} -exec chown #{librenms_username}:#{librenms_group} {} \\;"
+execute 'install composer dependencies' do
+  action :run
+  command 'php scripts/composer_wrapper.php install --no-dev'
+  cwd librenms_homedir
   user 'root'
   group 'root'
-  not_if "find -L #{librenms_homedir} ! -user #{librenms_username} | grep #{librenms_homedir}"
 end
+
 directory librenms_rrddir do
   owner librenms_username
   group librenms_group
@@ -356,5 +351,11 @@ execute 'adduser admin' do
   creates "#{librenms_homedir}/.admin_user_created_via_chef_do_not_remove"
 end
 
+execute 'chown to librenms user' do
+  command "chown -R #{librenms_username}:#{librenms_group} #{librenms_homedir}"
+  user 'root'
+  group 'root'
+  # not_if "find -L #{librenms_homedir} ! -user #{librenms_username} | grep #{librenms_homedir}"
+end
 
 include_recipe 'librenms-ng::cron'
