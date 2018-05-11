@@ -188,16 +188,32 @@ user librenms_username do
   manage_home false
 end
 
-ark 'librenms' do
-  url "#{node['librenms']['install']['url']}/#{librenms_file}"
-  path librenms_rootdir
-  home_dir librenms_homedir
-  mode 0755
-  checksum node['librenms']['install']['checksum'] unless node['librenms']['install']['checksum'].nil?
-  version librenms_version
-  owner librenms_username
-  group librenms_group
-  action :install
+# ark 'librenms' do
+#   url "#{node['librenms']['install']['url']}/#{librenms_file}"
+#   path librenms_rootdir
+#   home_dir librenms_homedir
+#   mode 0755
+#   checksum node['librenms']['install']['checksum'] unless node['librenms']['install']['checksum'].nil?
+#   version librenms_version
+#   owner librenms_username
+#   group librenms_group
+#   action :install
+# end
+
+# execute 'find and chown' do
+#   command "find -L #{librenms_homedir} ! -user #{librenms_username} -exec chown #{librenms_username}:#{librenms_group} {} \\;"
+#   user 'root'
+#   group 'root'
+#   not_if "find -L #{librenms_homedir} ! -user #{librenms_username} | grep #{librenms_homedir}"
+# end
+
+execute 'install composer dependencies' do
+  action :run
+  command "composer create-project --no-dev --keep-vcs librenms/librenms librenms #{librenms_version} && touch #{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
+  cwd librenms_rootdir
+  user 'root'
+  group 'root'
+  creates "#{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
 end
 
 execute 'find and chown' do
@@ -206,7 +222,6 @@ execute 'find and chown' do
   group 'root'
   not_if "find -L #{librenms_homedir} ! -user #{librenms_username} | grep #{librenms_homedir}"
 end
-
 directory librenms_rrddir do
   owner librenms_username
   group librenms_group
@@ -318,18 +333,9 @@ template librenms_phpconfigfile do
   )
 end
 
-execute 'install composer dependencies' do
-  action :run
-  command "composer create-project --no-dev --keep-vcs librenms/librenms librenms #{librenms_version} && touch #{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
-  cwd librenms_homedir
-  user 'root'
-  group 'root'
-  creates "#{librenms_homedir}/.installed_composer_deps_via_chef_do_not_remove"
-end
-
 execute 'build base' do
   action :run
-  command "cp ../config.php . && php build-base.php && touch #{librenms_homedir}/.built_base_via_chef_do_not_remove"
+  command "php build-base.php && touch #{librenms_homedir}/.built_base_via_chef_do_not_remove"
   cwd librenms_homedir
   user 'root'
   group 'root'
@@ -349,5 +355,6 @@ execute 'adduser admin' do
   group 'root'
   creates "#{librenms_homedir}/.admin_user_created_via_chef_do_not_remove"
 end
+
 
 include_recipe 'librenms-ng::cron'
