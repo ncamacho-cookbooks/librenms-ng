@@ -45,7 +45,7 @@ The release is tested on:
   <tr>
     <td><code>node['librenms']['web']['ssl']['enabled']</code></td>
     <td>Enable SSL</td>
-    <td><code>Yes</code></td>
+    <td><code>true</code></td>
   </tr>
   <tr>
     <td><code>node['librenms']['web']['ssl']['port']</code></td>
