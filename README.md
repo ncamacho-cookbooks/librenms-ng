@@ -43,6 +43,16 @@ The release is tested on:
     <td><code>80</code></td>
   </tr>
   <tr>
+    <td><code>node['librenms']['web']['ssl']['enabled']</code></td>
+    <td>Enable SSL</td>
+    <td><code>Yes</code></td>
+  </tr>
+  <tr>
+    <td><code>node['librenms']['web']['ssl']['port']</code></td>
+    <td>SSL Port</td>
+    <td><code>443</code></td>
+  </tr>
+  <tr>
     <td><code>node['librenms']['user']</code></td>
     <td>LibreNMS system user name</td>
     <td><code>librenms</code></td>

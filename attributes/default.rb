@@ -9,8 +9,12 @@ default['librenms']['user']  = 'librenms'
 default['librenms']['group'] = 'librenms'
 
 # httpd related
-default['librenms']['web']['name'] = 'librenms.example.com'
+default['librenms']['web']['name'] = %w[librenms.example.com]
 default['librenms']['web']['port'] = '80'
+default['librenms']['web']['ssl']['enabled'] = true
+default['librenms']['web']['ssl']['port'] = 443
+default['librenms']['web']['ssl']['certfile'] = "/etc/ssl/certs/ssl-cert-snakeoil.pem"
+default['librenms']['web']['ssl']['keyfile'] = "/etc/ssl/private/ssl-cert-snakeoil.key"
 default['librenms']['web']['enablephp'] = true
 default['librenms']['web']['options'] = 'FollowSymLinks MultiViews'
 default['librenms']['web']['override'] = 'All'
