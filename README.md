@@ -2,7 +2,7 @@
 
 
 [LibreNMS](http://www.librenms.org/)
-Installation and configuration by chef
+Installation and configuration by chef. This was based on the librenms cookbook but I found that cookbook had bugs in it and I aimed to fix them and added SSL support too. 
 
 ## Cookbooks dependencies
 * apt
